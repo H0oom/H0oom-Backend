@@ -10,7 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_10_141123) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_10_145453) do
+  create_table "chat_rooms", force: :cascade do |t|
+    t.integer "user1_id", null: false
+    t.integer "user2_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user1_id", "user2_id"], name: "index_chat_rooms_on_user1_id_and_user2_id", unique: true
+    t.index ["user2_id", "user1_id"], name: "index_chat_rooms_on_user2_id_and_user1_id", unique: true
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.text "content"
+    t.integer "user_id", null: false
+    t.integer "chat_room_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_room_id", "created_at"], name: "index_messages_on_chat_room_id_and_created_at"
+    t.index ["chat_room_id"], name: "index_messages_on_chat_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "fullname"
     t.string "email"
@@ -19,4 +39,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_10_141123) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
+
+  add_foreign_key "messages", "chat_rooms"
+  add_foreign_key "messages", "users"
 end

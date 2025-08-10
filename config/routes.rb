@@ -1,15 +1,16 @@
 Rails.application.routes.draw do
-  # API routes
-  namespace :api do
-    namespace :v1 do
-      namespace :auth do
-        post :signup
-        post :signin
-      end
-      
-      resources :users, only: [:index]
-    end
+  # Direct routes without API namespace
+  namespace :auth do
+    post :signup
+    post :signin
   end
+  
+  resources :users, only: [:index]
+  
+  # 채팅 관련 라우트
+  post 'chat/session', to: 'chat#create_session'
+  get 'chat/:room_id/messages', to: 'chat#messages'
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Root route - return 404 for non-API requests

@@ -1,5 +1,4 @@
-module Api
-  module V1
+
     class UsersController < ApplicationController
       include JwtAuthenticatable
       skip_before_action :verify_authenticity_token
@@ -22,5 +21,3 @@ module Api
         user.id == current_user.id ? 'online' : 'offline'
       end
     end
-  end
-end
