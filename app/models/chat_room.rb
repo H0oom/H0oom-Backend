@@ -1,29 +1,29 @@
 class ChatRoom < ApplicationRecord
-  belongs_to :user1, class_name: 'User'
-  belongs_to :user2, class_name: 'User'
+  has_many :chat_room_users, dependent: :destroy
+  has_many :users, through: :chat_room_users
   has_many :messages, dependent: :destroy
   
-  validates :user1_id, presence: true
-  validates :user2_id, presence: true
-  validate :users_must_be_different
+  validates :room_key, presence: true, uniqueness: true
   
   scope :for_user, ->(user_id) {
-    where('user1_id = ? OR user2_id = ?', user_id, user_id)
+    joins(:chat_room_users).where(chat_room_users: { user_id: user_id })
   }
   
   def participants
-    [user1, user2]
+    users
   end
   
   def other_user(current_user)
-    current_user.id == user1_id ? user2 : user1
+    users.where.not(id: current_user.id).first
   end
   
-  private
-  
-  def users_must_be_different
-    if user1_id == user2_id
-      errors.add(:base, 'You cannot chat with yourself')
+  def self.find_or_create_for_users(user1, user2)
+    # Generate a unique room key for the two users
+    user_ids = [user1.id, user2.id].sort
+    room_key = "room_#{user_ids.join('_')}"
+    
+    find_or_create_by(room_key: room_key) do |room|
+      room.users = [user1, user2]
     end
   end
 end

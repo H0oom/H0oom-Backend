@@ -1,11 +1,16 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  fullname: MyString
-  email: MyString
-  password_digest: MyString
+  fullname: "User One"
+  email: "user1@example.com"
+  password_digest: "$2a$12$KjByMjQ1ODMyZjQ5ODMyYjE3MjQ1ODMyZjQ5ODMyYjE3MjQ1ODMy"
 
 two:
-  fullname: MyString
-  email: MyString
-  password_digest: MyString
+  fullname: "User Two"
+  email: "user2@example.com"
+  password_digest: "$2a$12$KjByMjQ1ODMyZjQ5ODMyYjE3MjQ1ODMyZjQ5ODMyYjE3MjQ1ODMy"
+
+three:
+  fullname: "User Three"
+  email: "user3@example.com"
+  password_digest: "$2a$12$KjByMjQ1ODMyZjQ5ODMyYjE3MjQ1ODMyZjQ5ODMyYjE3MjQ1ODMy"
