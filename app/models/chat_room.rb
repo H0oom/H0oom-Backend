@@ -22,8 +22,20 @@ class ChatRoom < ApplicationRecord
     user_ids = [user1.id, user2.id].sort
     room_key = "room_#{user_ids.join('_')}"
     
-    find_or_create_by(room_key: room_key) do |room|
-      room.users = [user1, user2]
+    # Use transaction to ensure data consistency
+    transaction do
+      chat_room = find_or_create_by(room_key: room_key)
+      
+      # Create chat_room_users associations if they don't exist
+      unless chat_room.chat_room_users.exists?(user_id: user1.id)
+        chat_room.chat_room_users.create!(user: user1)
+      end
+      
+      unless chat_room.chat_room_users.exists?(user_id: user2.id)
+        chat_room.chat_room_users.create!(user: user2)
+      end
+      
+      chat_room
     end
   end
 end

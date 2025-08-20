@@ -21,11 +21,7 @@
                            .first
         
         if chat_room.nil?
-
-          chat_room = ChatRoom.create!(
-            user1_id: [current_user.id, target_user.id].min,
-            user2_id: [current_user.id, target_user.id].max
-          )
+          chat_room = ChatRoom.find_or_create_for_users(current_user, target_user)
           status = :created
         else
           status = :ok
@@ -42,6 +38,31 @@
         }, status: status
       end
       
+      def show
+        chat_room = ChatRoom.find_by(id: params[:room_id])
+        
+        unless chat_room
+          render json: { error: 'Chat room not found' }, status: :not_found
+          return
+        end
+        
+        unless chat_room.participants.include?(current_user)
+          render json: { error: 'You do not have permission to access this chat room' }, status: :forbidden
+          return
+        end
+        
+        render json: {
+          room_id: chat_room.id,
+          room_key: chat_room.room_key,
+          participants: chat_room.participants.map do |user|
+            {
+              id: user.id,
+              name: user.fullname
+            }
+          end,
+          created_at: chat_room.created_at.iso8601
+        }, status: :ok
+      end
 
       def messages
         chat_room = ChatRoom.find_by(id: params[:room_id])

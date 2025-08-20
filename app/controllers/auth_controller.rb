@@ -1,8 +1,8 @@
 
     class AuthController < ApplicationController
       include JwtAuthenticatable
-      skip_before_action :verify_authenticity_token
       skip_before_action :authenticate_user!, only: [:signup, :signin]
+      skip_before_action :verify_authenticity_token, only: [:signup, :signin]
       def signup
         user = User.new(user_params)
 
@@ -44,10 +44,18 @@
       private
 
       def user_params
-        params.require(:user).permit(:fullname, :email, :password)
+        if params[:user].present?
+          params.require(:user).permit(:fullname, :email, :password)
+        else
+          params.permit(:fullname, :email, :password)
+        end
       end
 
       def login_params
-        params.require(:user).permit(:email, :password)
+        if params[:user].present?
+          params.require(:user).permit(:email, :password)
+        else
+          params.permit(:email, :password)
+        end
       end
     end

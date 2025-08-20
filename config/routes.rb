@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   
   # 채팅 관련 라우트
   post 'chat/session', to: 'chat#create_session'
+  get 'chat/:room_id', to: 'chat#show'
   get 'chat/:room_id/messages', to: 'chat#messages'
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
